@@ -1,0 +1,21 @@
+# secrets / state — never commit
+accounts.json
+ts_token.json
+state.json
+.accounts.lock
+config.json
+*.key
+*.pem
+
+# runtime
+__pycache__/
+*.pyc
+*.log
+screen.log
+ts_solve.png
+.venv/
+venv/
+
+# editor
+.idea/
+.vscode/

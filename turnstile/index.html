@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>challenge</title>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=ready&render=explicit" async defer></script>
+</head>
+<body>
+<div id="challenge"></div>
+<pre id="out" style="font:12px monospace"></pre>
+<script>
+  window.TOKEN = "";
+  window.READY = false;
+  function ready() {
+    turnstile.render('#challenge', {
+      sitekey: '0x4AAAAAAE4Yb4FqKM_qx4B1',
+      action: 'register',
+      language: 'en',
+      callback: function (t) {
+        window.TOKEN = t;
+        window.READY = true;
+        document.title = 'TOKEN_READY';
+        document.getElementById('out').textContent = t;
+      },
+      'error-callback': function (e) { window.ERR = e; document.title = 'ERR:' + e; }
+    });
+  }
+</script>
+</body>
+</html>
