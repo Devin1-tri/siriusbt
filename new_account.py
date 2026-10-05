@@ -22,10 +22,25 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 CFSOLVE = "/home/ubuntu/bot/cfsolve/bin/python"
 TOKEN = os.path.join(HERE, "ts_token.json")
 INVITE = sys.argv[1] if len(sys.argv) > 1 else os.environ.get("SIRIUS_INVITE", "f34UvL")
+# anti-flag: never register two identities back to back from the same egress
+COOLDOWN = os.path.join(HERE, ".last_register")
+COOLDOWN_MIN = float(os.environ.get("REGISTER_COOLDOWN_MIN", "45"))
 
 
 def log(*a):
     print(f"[{time.strftime('%H:%M:%S')}]", *a, flush=True)
+
+
+def cooldown_ok():
+    """True when enough time passed since the last registration from this box."""
+    if not os.path.exists(COOLDOWN):
+        return True
+    age_min = (time.time() - os.path.getmtime(COOLDOWN)) / 60
+    if age_min >= COOLDOWN_MIN:
+        return True
+    log(f"TOLAK: baru daftar {age_min:.0f} menit lalu, cooldown {COOLDOWN_MIN:.0f} menit"
+        " (jangan burst register dari IP yang sama)")
+    return False
 
 
 def solve_turnstile():
@@ -70,6 +85,8 @@ def main():
     if not os.path.exists(CFSOLVE):
         log("solver tidak ada:", CFSOLVE)
         return 1
+    if not cooldown_ok():
+        return 5
     tok = solve_turnstile()
     if not tok:
         return 2
@@ -79,6 +96,8 @@ def main():
     key, _ = register(tok)
     if not key:
         return 3
+    with open(COOLDOWN, "w") as fh:        # start the cooldown for the next account
+        fh.write(key)
 
     with accounts_lock() as accts:
         client, key = session_for(accts, key)

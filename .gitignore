@@ -2,6 +2,7 @@
 accounts.json
 ts_token.json
 state.json
+.last_register
 .accounts.lock
 config.json
 *.key
