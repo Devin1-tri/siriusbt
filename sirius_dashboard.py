@@ -75,19 +75,27 @@ def one_pass():
 
 def render(rows, n):
     os.system("clear" if os.environ.get("TERM") else "true")
-    print("=" * 78)
+    BOX = 78
+    print("=" * BOX)
     print("  SIRIUS NETWORK BOT  ·  api.siriussrt.com  ·  round 24h, settle tiap 60 mnt")
-    print(f"  pass #{n} @ {time.strftime('%Y-%m-%d %H:%M:%S')}  ·  interval {INTERVAL_MIN}m"
+    print(f"  pass #{n} @ {time.strftime('%Y-%m-%d %H:%M:%S')}  ·  interval {INTERVAL_MIN:g} mnt"
           f"  ·  invite {INVITE}")
-    print("=" * 78)
+    print("=" * BOX)
     print(f"{'akun':<14}{'kode':<9}{'mining':<10}{'round s/d':<15}"
-          f"{'reward':<10}{'balance':<10}{'inv':<5}{'refs'}")
-    print("-" * 78)
+          f"{'reward':<11}{'balance':<11}{'inv':<5}{'refs'}")
+    print("-" * BOX)
+    total = 0.0
     for r in rows:
-        print(f"{r[0]:<14}{r[1]:<9}{r[2]:<10}{r[3]:<15}{r[4]:<10}{r[5]:<10}{r[6]:<5}{r[7]}")
-    print("-" * 78)
-    print("rate 0.0069 SST/menit = ~10 SST/akun/hari · Ctrl+C keluar, ./sirius.sh start lagi")
-    print(f"next pass dalam {INTERVAL_MIN:.0f} menit", flush=True)
+        print(f"{r[0]:<14}{r[1]:<9}{r[2]:<10}{r[3]:<15}{r[4]:<11}{r[5]:<11}{r[6]:<5}{r[7]}")
+        try:
+            total += float(r[5])
+        except Exception:
+            pass
+    print("-" * BOX)
+    print(f" total balance {total:,.4f} SST   ({len(rows)} akun)")
+    print(" rate 0.0069 SST/menit = ~10 SST/akun/hari")
+    print(f" next pass dalam {INTERVAL_MIN:.0f} menit   ·   Ctrl+C keluar, ./sirius.sh start lagi",
+          flush=True)
 
 
 def main():
